@@ -6,7 +6,7 @@
     "build": "next build",
     "start": "next start",
     "server": "./bin/server.js",
-    "install": "next build"
+    "xxxinstall": "next build"
   },
   "bin": {
     "macron": "./bin/server.js"

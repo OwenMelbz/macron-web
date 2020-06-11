@@ -1,0 +1,1 @@
+{"ast":null,"code":"export const fire = (name, detail) => document.dispatchEvent(new CustomEvent(name, {\n  detail\n}));\nexport const off = (name, callback) => document.removeEventListener(name, callback);\nexport const on = (name, callback) => document.addEventListener(name, callback);","map":null,"metadata":{},"sourceType":"module"}
