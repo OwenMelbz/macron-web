@@ -3,7 +3,7 @@ import {getJobs} from "../../utils/crontab";
 
 export default async (req, res) => {
   try {
-    const jobs = await getJobs();
+    const jobs = await getJobs(true);
     res.statusCode = 200;
     res.json(jobs);
   } catch (error) {

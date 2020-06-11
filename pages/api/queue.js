@@ -1,11 +1,12 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
-import {getJobs} from "../../utils/crontab";
+import {getQueue} from "../../utils/crontab";
+import {serialiseJob} from "../../utils/helpers";
 
 export default async (req, res) => {
   try {
-    const jobs = await getJobs();
+    const jobs = await getQueue();
     res.statusCode = 200;
-    res.json(jobs);
+    res.json(jobs.map(j => serialiseJob(j)));
   } catch (error) {
     res.statusCode = 500;
     res.json({

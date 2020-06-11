@@ -1,93 +1,99 @@
-import React, {useEffect, useState} from 'react';
-import {message, Modal, Spin} from 'antd';
+import React, {useState} from 'react';
+import {message, Modal} from 'antd';
 import Placeholder from '../components/Placeholder';
 import Sidebar from '../components/Sidebar';
 import Editor from '../components/Editor';
-import {makeJob} from "../utils/helpers";
+import {placeholder} from "../utils/helpers";
+import {fire} from "../utils/events";
 
-function App({ initialJobs }) {
+function App({initialJobs}) {
   const [jobs, setJobs] = useState(initialJobs);
   const [job, setJob] = useState(null);
 
   const connect = async (selected = null) => {
-      const res = await fetch('http://localhost:3000/api/get')
-      const js = await res.json();
+    const res = await fetch('http://localhost:3000/api/get')
+    const js = await res.json();
 
-      console.log(js)
-
-      setJobs(js);
+    setJobs(js);
   };
 
-  const onCreate = async () => {
+  const onCreate = () => {
     if (job && !job.key) {
       return 'already an unsaved job.';
     }
 
-    const resp = await fetch('http://localhost:3000/api/placeholder');
-    const b = await resp.json();
+    fire('new-job');
+
+    const b = placeholder();
     return setJob(b);
   };
 
-  const onCancel = () => {
+  const onCancel = async () => {
     message.success('Changes cancelled.');
     setJob(null);
-    connect();
+
+    const res = await fetch('http://localhost:3000/api/refresh')
+    const js = await res.json();
+
+    setJobs(js);
   };
 
-  const onSave = (j, payload) => {
-    const newJob = api.create(
-        payload.command,
-        [
-          payload.minute,
-          payload.hour,
-          payload.day,
-          payload.month,
-          payload.weekday
-        ].join(' '),
-        payload.name
-    );
+  const onSave = async (j, payload) => {
+    const data = {
+      key: j.key,
+      command: payload.command,
+      comment: payload.name,
+      interval: [
+        payload.minute,
+        payload.hour,
+        payload.day,
+        payload.month,
+        payload.weekday
+      ].join(' '),
+    };
 
-    if (!newJob || !newJob.isValid()) {
-      return message.error('Invalid cron syntax');
+    const res = await fetch('http://localhost:3000/api/save', {
+      method: 'POST',
+      body: JSON.stringify(data)
+    })
+
+    const {job, jobs, error} = await res.json();
+
+    if (error) {
+      return message.error(error);
     }
 
-    api.remove(j.job);
+    setJobs(jobs);
+    setJob(job);
 
-    return api.save(() => {
-      const x = makeJob(newJob);
-      message.success(`${x.name} saved.`);
-      connect(x);
-    });
+    return message.success(`${job.name} saved.`);
   };
 
   const onDelete = j => {
     Modal.confirm({
       title: j.name,
       content: `Are you sure you want to delete this job?`,
-      onOk() {
-        api.remove(j.job);
-        api.save(() => {
-          setJob(null);
-          message.error(`${j.name} deleted.`);
-          connect();
-        });
+      onOk: async () => {
+        const res = await fetch('http://localhost:3000/api/delete', {
+          method: 'POST',
+          body: j.key
+        })
+
+        const jobs = await res.json();
+
+        setJobs(jobs);
+        setJob(null);
+
+        message.error(`${j.name} deleted.`);
       }
     });
   };
-
-  // useEffect(() => {
-  //   connect();
-  //
-  //   on('touchbar-create', onCreate);
-  //
-  //   return () => off('touchbar-create', onCreate);
-  // }, []);
 
   return (
       <>
         <div className="flex flex-wrap min-h-screen">
           <nav className="w-1/4">
-            <Sidebar onCreate={onCreate} jobs={jobs} onSelect={setJob}/>
+            <Sidebar onCreate={onCreate} jobs={jobs} job={job} onSelect={setJob}/>
           </nav>
           <div className="w-3/4">
             {job ? (
@@ -108,7 +114,7 @@ function App({ initialJobs }) {
 
 export const getServerSideProps = async () => {
   try {
-    const res = await fetch('http://localhost:3000/api/get')
+    const res = await fetch('http://localhost:3000/api/refresh')
 
     return {
       props: {

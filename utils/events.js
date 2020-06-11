@@ -1,4 +1,6 @@
-export const fire = name => document.dispatchEvent(new Event(name))
+export const fire = (name, detail) => document.dispatchEvent(new CustomEvent(name, {
+    detail,
+}))
 
 export const off = (name, callback) => document.removeEventListener(name, callback);
 

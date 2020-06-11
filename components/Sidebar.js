@@ -1,16 +1,43 @@
 import { Button, Menu } from 'antd';
-import React from 'react';
+import React, {useEffect, useState} from 'react';
+import {off, on} from "../utils/events";
 
-function Sidebar({ jobs, onSelect, onCreate }) {
+function Sidebar({ jobs, job, onSelect, onCreate }) {
+    const [selected, setSelected] = useState([]);
+
     const select = ({ key }) => {
+        setSelected([key])
         const job = jobs.find(j => j.key === key);
         onSelect(job);
     };
+
+    const reset = () => {
+        setSelected([]);
+    }
+
+    const updated = ({ detail }) => {
+        setSelected([detail.key]);
+    }
+
+    useEffect(() => {
+        if (job) {
+            setSelected([job.key])
+        } else {
+            setSelected([])
+        }
+        // on('new-job', reset)
+        // on('updated', updated)
+        return () => {
+            // off('new-job', reset)
+            // off('updated', updated)
+        }
+    }, [job])
 
     return (
         <Menu
             onClick={select}
             mode="inline"
+            selectedKeys={selected}
             className="h-screen overflow-x-hidden overflow-y-auto"
         >
             <li

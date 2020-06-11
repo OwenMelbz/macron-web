@@ -1,5 +1,5 @@
-import { message } from 'antd';
-import {useState} from "react";
+import {v4} from "uuid";
+
 
 export const waitFor = seconds =>
     new Promise(resolve => setTimeout(resolve, seconds * 1000));
@@ -25,17 +25,38 @@ export const emojiUrl = emoji => {
     return canvas.toDataURL();
 };
 
-export const makeJob = (j, key) => ({
-    job: {
-        comment: j.comment(),
-        minute: j.minute().toString(),
-        hour: j.hour().toString(),
-        dom: j.dom().toString(),
-        month: j.month().toString(),
-        dow: j.dow().toString(),
-        command: j.command().toString(),
-    },
+export const buildJob = (job, key) => ({
+    job,
     key,
-    name: j.comment() || j.render(),
-    selected: false,
+    name: job.comment() || job.render(),
 });
+
+export const serialiseJob = job => ({
+    key: job.key,
+    name: job.name,
+    job: {
+        comment: job.job.comment(),
+        command: job.job.command(),
+        minute: job.job.minute().toString(),
+        hour: job.job.hour().toString(),
+        dom: job.job.dom().toString(),
+        month: job.job.month().toString(),
+        dow: job.job.dow().toString(),
+    }
+})
+
+export const placeholder = () => {
+    return {
+        "key": v4(),
+        "name": "hello world",
+        "job": {
+            "comment": "hello world",
+            "command": "echo 'hello world'",
+            "minute": "*",
+            "hour": "*",
+            "dom": "*",
+            "month": "*",
+            "dow": "*"
+        }
+    }
+}

@@ -94,7 +94,6 @@ function CronBuilder({ job, onSave, onCancel, onDelete }) {
                 <Radio.Group
                     value={frequency}
                     onChange={e => help(e.target.value)}
-                    size="large"
                     defaultValue={frequency}
                     buttonStyle="solid"
                 >
