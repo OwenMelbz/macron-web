@@ -1,17 +1,17 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {message, Modal} from 'antd';
 import Placeholder from '../components/Placeholder';
 import Sidebar from '../components/Sidebar';
 import Editor from '../components/Editor';
-import {placeholder} from "../utils/helpers";
+import {placeholder, endpoint} from "../utils/helpers";
 import {fire} from "../utils/events";
 
-function App({initialJobs}) {
-  const [jobs, setJobs] = useState(initialJobs);
+function App() {
+  const [jobs, setJobs] = useState([]);
   const [job, setJob] = useState(null);
 
   const connect = async (selected = null) => {
-    const res = await fetch('http://localhost:3000/api/get')
+    const res = await fetch(endpoint('get'))
     const js = await res.json();
 
     setJobs(js);
@@ -32,7 +32,7 @@ function App({initialJobs}) {
     message.success('Changes cancelled.');
     setJob(null);
 
-    const res = await fetch('http://localhost:3000/api/refresh')
+    const res = await fetch(endpoint('refresh'))
     const js = await res.json();
 
     setJobs(js);
@@ -52,7 +52,7 @@ function App({initialJobs}) {
       ].join(' '),
     };
 
-    const res = await fetch('http://localhost:3000/api/save', {
+    const res = await fetch(endpoint('save'), {
       method: 'POST',
       body: JSON.stringify(data)
     })
@@ -74,7 +74,7 @@ function App({initialJobs}) {
       title: j.name,
       content: `Are you sure you want to delete this job?`,
       onOk: async () => {
-        const res = await fetch('http://localhost:3000/api/delete', {
+        const res = await fetch(endpoint('delete'), {
           method: 'POST',
           body: j.key
         })
@@ -88,6 +88,17 @@ function App({initialJobs}) {
       }
     });
   };
+
+  useEffect(() => {
+    const load = async () => {
+      const res = await fetch(endpoint('refresh'))
+      const js = await res.json();
+
+      setJobs(js);
+    }
+
+    load();
+  }, [])
 
   return (
       <>
@@ -110,24 +121,6 @@ function App({initialJobs}) {
         </div>
       </>
   );
-}
-
-export const getServerSideProps = async () => {
-  try {
-    const res = await fetch('http://localhost:3000/api/refresh')
-
-    return {
-      props: {
-        initialJobs: await res.json(),
-      },
-    }
-  } catch (error) {
-    return {
-      props: {
-        initialJobs: [],
-      }
-    }
-  }
 }
 
 export default App;

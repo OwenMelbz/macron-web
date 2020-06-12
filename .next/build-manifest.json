@@ -1,8 +1,8 @@
 {
   "devFiles": [],
   "lowPriorityFiles": [
-    "static/IutJPLyXfAxmWmmnQw-ZI/_buildManifest.js",
-    "static/IutJPLyXfAxmWmmnQw-ZI/_ssgManifest.js"
+    "static/lFCFYBKhSpLfVirAtpx0I/_buildManifest.js",
+    "static/lFCFYBKhSpLfVirAtpx0I/_ssgManifest.js"
   ],
   "pages": {
     "/": [
@@ -19,7 +19,7 @@
       "static/css/ac79afdee77bd45837d3.css",
       "static/chunks/a180967f.e05b9cac0aab3e16d0b1.js",
       "static/chunks/commons.396b6ba75ff642fd930f.js",
-      "static/chunks/2a3f0a6c6deeda26654e9f98e47ef583d1e617b3.8bc66de866e69a0271a0.js",
+      "static/chunks/85723f50472f4e0d5d20459a257791435f81a54b.8bc66de866e69a0271a0.js",
       "static/runtime/main-d2437119f17a5fdf22c7.js"
     ],
     "/_error": [

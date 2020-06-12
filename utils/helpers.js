@@ -1,5 +1,8 @@
 import {v4} from "uuid";
 
+export const endpoint = path => {
+    return `${window.location.origin}/api/${path}`
+}
 
 export const waitFor = seconds =>
     new Promise(resolve => setTimeout(resolve, seconds * 1000));
