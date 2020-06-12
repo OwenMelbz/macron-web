@@ -1,1 +1,0 @@
-{"ast":null,"code":"import 'antd/dist/antd.css';\nimport '../styles.css'; // This default export is required in a new `pages/_app.js` file.\n\nexport default function MyApp(_ref) {\n  var Component = _ref.Component,\n      pageProps = _ref.pageProps;\n  return /*#__PURE__*/React.createElement(Component, pageProps);\n}","map":null,"metadata":{},"sourceType":"module"}
