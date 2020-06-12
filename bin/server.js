@@ -5,4 +5,4 @@ const appDirectory = path.resolve(__dirname, '../')
 
 process.env.NODE_ENV = 'production';
 
-next.nextStart([appDirectory]);
+next.nextStart([appDirectory +  '--port 1000']);
