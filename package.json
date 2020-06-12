@@ -1,6 +1,6 @@
 {
   "name": "macron-web",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -9,7 +9,8 @@
     "xxxinstall": "next build"
   },
   "bin": {
-    "macron": "./bin/server.js"
+    "macron": "./bin/server.js",
+    "macrontunnel": "./bin/tunnel.sh"
   },
   "dependencies": {
     "@babel/core": "^7.10.2",
